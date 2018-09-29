@@ -166,6 +166,7 @@ class chain_game():
 	def home_loop(self):
 		print("here")
 		sleep(0.2)
+		print("hhhhhhhhhh")
 		while True:
 			self.gameDisplay.fill(self.black)
 			print(self.mouse_pos)
@@ -190,7 +191,7 @@ class chain_game():
 			# (self,action,text,center_x,center_y,width,height,on_color,off_color,text_color)
 			self.show_selected()
 			self.add_button(self.play,"Start",self.display_width*0.5,self.display_height*0.85,self.display_width*0.4,self.display_height*0.075,self.dark_green,self.green,self.black)
-			self.add_button(self.option_tog,"Go Back",self.display_width*0.5,self.display_height*0.95,self.display_width*0.4,self.display_height*0.075,self.dark_red,self.red,self.black)
+			self.add_button(self.home_loop,"Goo Back",self.display_width*0.5,self.display_height*0.95,self.display_width*0.4,self.display_height*0.075,self.dark_red,self.red,self.black)
 
 			pygame.display.update()
 
