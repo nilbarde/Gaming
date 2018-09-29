@@ -139,6 +139,8 @@ class chain_game():
 		self.my_clock = 1
 
 		self.game_over = False
+		self.option_over = False
+		self.after_game_option = False
 
 	def play(self):
 		self.define_play_variables()
@@ -146,26 +148,40 @@ class chain_game():
 		self.mode = "moving"
 		self.update_display()
 		winner_text = "player " + str(self.now_player) + " won the game"
-		self.message_display(winner_text,self.display_width/2,self.display_height/2,30,self.player_color[self.now_player])
+		self.message_display(winner_text,self.display_width/2,self.display_height*0.3,30,self.player_color[self.now_player])
 		pygame.display.update()
+		self.after_game_option = False
+		while not self.after_game_option:
+			for event in pygame.event.get():
+				self.mouse_pos = pygame.mouse.get_pos()
+				self.mouse_clk = pygame.mouse.get_pressed()
+			self.add_button(self.play,"Play Again",self.display_width/2,self.display_height*0.45,self.display_width*0.4,self.display_height*0.1,self.dark_green,self.green,self.black)
+			self.add_button(self.option_window,"Reset",self.display_width/2,self.display_height*0.6,self.display_width*0.4,self.display_height*0.1,self.dark_green,self.green,self.black)
+			self.add_button(self.home_loop,"Home",self.display_width/2,self.display_height*0.75,self.display_width*0.4,self.display_height*0.1,self.dark_green,self.green,self.black)
+			self.add_button(self.game_quit,"Quit",self.display_width/2,self.display_height*0.90,self.display_width*0.4,self.display_height*0.1,self.dark_red,self.red,self.black)
+			pygame.display.update()
+
 		sleep(4)
-		self.mode = "not moving"
 
 	def home_loop(self):
+		print("here")
+		sleep(0.2)
 		while True:
+			self.gameDisplay.fill(self.black)
 			print(self.mouse_pos)
 			for event in pygame.event.get():
 				self.mouse_pos = pygame.mouse.get_pos()
 				self.mouse_clk = pygame.mouse.get_pressed()
 			self.message_display("New Game",self.display_width/2,self.display_height*0.3,40,self.white)
-			self.add_button(self.option_window,"Play",self.display_width/2,self.display_height*0.6,self.display_width*0.4,self.display_height*0.2,self.dark_green,self.green,self.black)
+			self.add_button(self.option_window,"Play",self.display_width/2,self.display_height*0.6,self.display_width*0.4,self.display_height*0.15,self.dark_green,self.green,self.black)
+			self.add_button(self.game_quit,"Quit",self.display_width/2,self.display_height*0.8,self.display_width*0.4,self.display_height*0.15,self.dark_red,self.red,self.black)
 			pygame.display.update()
 
 	def option_window(self):
 		sleep(0.1)
 		# self.gameDisplay.fill(self.black)
-		self.game_over = False
-		while not self.game_over:
+		self.option_over = False
+		while not self.option_over:
 			self.gameDisplay.fill(self.black)
 			sleep(0.09)
 			for event in pygame.event.get():
@@ -173,7 +189,8 @@ class chain_game():
 				self.mouse_clk = pygame.mouse.get_pressed()
 			# (self,action,text,center_x,center_y,width,height,on_color,off_color,text_color)
 			self.show_selected()
-			self.add_button(self.play,"Start",self.display_width*0.5,self.display_height*0.85,self.display_width*0.4,self.display_height*0.1,self.dark_green,self.green,self.black)
+			self.add_button(self.play,"Start",self.display_width*0.5,self.display_height*0.85,self.display_width*0.4,self.display_height*0.075,self.dark_green,self.green,self.black)
+			self.add_button(self.option_tog,"Go Back",self.display_width*0.5,self.display_height*0.95,self.display_width*0.4,self.display_height*0.075,self.dark_red,self.red,self.black)
 
 			pygame.display.update()
 
@@ -196,6 +213,9 @@ class chain_game():
 			self.add_button(None," ",(self.player_color_pos[self.tot_players][i][1])*self.display_width ,(self.player_color_pos[self.tot_players][i][0])*self.display_height ,self.display_width*0.06,self.display_height*0.06,self.player_color[i],self.player_color[i],self.black)
 			self.add_button(partial(self.add_val,(i),"color"),"->",(self.player_color_pos[self.tot_players][i][1]+0.1)*self.display_width ,(self.player_color_pos[self.tot_players][i][0])*self.display_height ,self.display_width*0.06,self.display_height*0.06,self.gray,self.gray,self.black)
 			self.add_button(partial(self.add_val,-(i),"color"),"<-",(self.player_color_pos[self.tot_players][i][1]-0.1)*self.display_width ,(self.player_color_pos[self.tot_players][i][0])*self.display_height ,self.display_width*0.06,self.display_height*0.06,self.gray,self.gray,self.black)
+
+	def option_tog(self):
+		self.option_over = not self.option_over
 
 	def add_val(self,how_many,what):
 		if(what=="player"):
@@ -227,7 +247,7 @@ class chain_game():
 		print(self.player_color)
 		self.update_display()
 		self.mode = "not moving"
-		sleep(0.05)
+		sleep(0.15)
 		self.mouse_pos = pygame.mouse.get_pos()
 		self.mouse_clk = pygame.mouse.get_pressed()
 		while not self.game_over:
@@ -255,9 +275,12 @@ class chain_game():
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.game_over = True
+					self.game_quit()
 				if event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_q:
 						self.game_over = True
+						self.game_quit()
+		self.mode = "moving"
 
 	def update_display(self):
 		self.mouse_pos = pygame.mouse.get_pos()
