@@ -55,7 +55,6 @@ class chain_game():
 		self.mode = "moving"
 		pygame.display.update()
 
-
 	def set_grid_vals(self):
 		self.max_balls[0][0], self.max_balls[self.no_rows-1][0], self.max_balls[0][self.no_cols-1], self.max_balls[self.no_rows-1][self.no_cols-1] = 1, 1, 1, 1
 		self.max_balls[0,1:self.no_cols-1], self.max_balls[self.no_rows-1,1:self.no_cols-1],self.max_balls[1:self.no_rows-1,0], self.max_balls[1:self.no_rows-1,self.no_cols-1] = 2, 2, 2, 2
@@ -315,9 +314,9 @@ class chain_game():
 
 	def draw_grid(self,color):
 		self.gameDisplay.fill(self.black)
-		for i in range(self.edge_space,(self.edge_space+self.grid_width+1),self.cell_width):
+		for i in range(int(self.edge_space),int(self.edge_space+self.grid_width+1),int(self.cell_width)):
 			pygame.draw.line(self.gameDisplay, color, (i,self.edge_space),(i,(self.edge_space+(self.no_rows)*self.cell_height)),self.edge_width)
-		for i in range(self.edge_space,(self.edge_space+self.grid_height+1),self.cell_height):
+		for i in range(int(self.edge_space),int(self.edge_space+self.grid_height+1),int(self.cell_height)):
 			pygame.draw.line(self.gameDisplay, color, (self.edge_space,i),((self.edge_space+(self.no_cols)*self.cell_width),i),self.edge_width)
 		self.mouse_pos = pygame.mouse.get_pos()
 		self.mouse_clk = pygame.mouse.get_pressed()
