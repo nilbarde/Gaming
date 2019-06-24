@@ -82,6 +82,22 @@ class heli_game():
 		for i in range(self.cols):
 			self.update_grid()
 
+	def home_loop(self):
+		print("here")
+		sleep(0.2)
+		print("hhhhhhhhhh")
+		while True:
+			self.update_display()
+			self.gameDisplay.fill(self.black)
+			print(self.mouse_pos)
+			for event in pygame.event.get():
+				self.mouse_pos = pygame.mouse.get_pos()
+				self.mouse_clk = pygame.mouse.get_pressed()
+			self.message_display("New Game",self.display_width/2,self.display_height*0.3,40,self.white)
+			self.add_button(self.game_loop,"Play",self.display_width/2,self.display_height*0.6,self.display_width*0.4,self.display_height*0.15,self.dark_green,self.green,self.black)
+			self.add_button(self.game_quit,"Quit",self.display_width/2,self.display_height*0.8,self.display_width*0.4,self.display_height*0.15,self.dark_red,self.red,self.black)
+			pygame.display.update()
+
 	def game_loop(self):
 		self.game_exit = False
 		x_s = 0
@@ -89,6 +105,7 @@ class heli_game():
 		while not self.game_exit:
 			# x_s = 0
 			# y_s = 0
+			self.update_display()
 			self.level_time += 1
 			if self.level_time > self.level_up_time:
 				self.level_time = 0
@@ -143,6 +160,37 @@ class heli_game():
 			self.message_display("score = " + str(self.score),self.display_width-100,30,30,self.dark_green)
 			self.message_display("level = " + str(self.level) + " (" + str(int((self.level_time*100)//self.level_up_time)) + "%) ",self.display_width-100,self.display_height-30,30,self.dark_green)
 			pygame.display.update()
+
+	def update_display(self):
+		self.mouse_pos = pygame.mouse.get_pos()
+		self.mouse_clk = pygame.mouse.get_pressed()
+
+	def add_button(self,action,text,center_x,center_y,width,height,on_color,off_color,text_color):
+		if(center_x+(width/2)>self.mouse_pos[0]>center_x-(width/2) and center_y+(height/2)>self.mouse_pos[1]>center_y-(height/2)):
+			pygame.draw.rect(self.gameDisplay, on_color, (center_x-(width/2),center_y-(height/2),width,height))
+			if(self.mouse_clk[0]==1 and action != None):
+				# print(text,self.mode)
+				action()
+		else:
+			pygame.draw.rect(self.gameDisplay, off_color, (center_x-(width/2),center_y-(height/2),width,height))
+		self.message_display(text,center_x,center_y,30,text_color)
+
+	def text_objs(sel,text,font,color):
+		textsurf = font.render(text, True, color)
+		return textsurf, textsurf.get_rect()
+
+	def message_display(self,text,center_x,center_y,text_size=100,color=(0,0,0)):
+		try:
+			largetext = pygame.font.Font("ARCADE.TTF",text_size)
+		except:
+			largetext = pygame.font.SysFont("liberationserif",text_size)
+		textsurf, textrect = self.text_objs(text,largetext,color)
+		textrect.center = ((center_x),(center_y))
+		self.gameDisplay.blit(textsurf,textrect)
+
+	def game_quit(self):
+		pygame.quit()
+		quit()
 
 	def DrawSnake(self):
 		HeadX, HeadY = self.edge_space + self.edge_width + int((self.SnakePos[0][0] + 0.5)*self.road_width), self.edge_space + self.edge_width + int((self.SnakePos[0][1] + 0.5)*self.road_width)
@@ -215,9 +263,9 @@ class heli_game():
 		if(np.sum(self.heli_occu*self.cell_occu)):
 			print(np.sum(self.heli_occu),np.sum(self.cell_occu))
 			print("broken",np.sum(self.heli_occu*self.cell_occu))
-			sleep(5)
+			sleep(2)
 			self.define_game_constants()
-			self.game_loop()
+			self.home_loop()
 
 	def message_display(self,text,center_x,center_y,text_size=100,color=(0,0,0)):
 		try:
@@ -234,5 +282,5 @@ class heli_game():
 
 game = heli_game()
 # game.play()
-game.game_loop()
+game.home_loop()
 
